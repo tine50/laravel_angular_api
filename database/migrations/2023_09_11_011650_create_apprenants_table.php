@@ -15,6 +15,10 @@ return new class extends Migration
     {
         Schema::create('apprenants', function (Blueprint $table) {
             $table->id();
+            $table->string('prenom');
+            $table->string('nom');
+            $table->integer('age');
+            $table->foreignId('classe_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }
