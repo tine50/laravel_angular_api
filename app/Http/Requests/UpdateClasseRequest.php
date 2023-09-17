@@ -13,7 +13,7 @@ class UpdateClasseRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -25,6 +25,7 @@ class UpdateClasseRequest extends FormRequest
     {
         return [
             //
+            "name" => "required|unique:classes|max:255"
         ];
     }
 }

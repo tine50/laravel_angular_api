@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Classe;
 use App\Http\Requests\StoreClasseRequest;
 use App\Http\Requests\UpdateClasseRequest;
+use App\Models\Classe;
+use Illuminate\Http\Request;
+use App\Http\Resources\ClassesResource;
 
-class ClasseController extends Controller
+class ClassesController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -15,7 +17,7 @@ class ClasseController extends Controller
      */
     public function index()
     {
-        //
+        return ClassesResource::collection(Classe::all());
     }
 
     /**
@@ -34,9 +36,15 @@ class ClasseController extends Controller
      * @param  \App\Http\Requests\StoreClasseRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StoreClasseRequest $request)
+    public function store(Request $request)
     {
-        //
+        $classe = Classe::create(
+            [
+                'name' => $request->name,
+            ]
+        );
+
+        return new ClassesResource($classe);
     }
 
     /**
@@ -45,9 +53,9 @@ class ClasseController extends Controller
      * @param  \App\Models\Classe  $classe
      * @return \Illuminate\Http\Response
      */
-    public function show(Classe $classe)
-    {
-        //
+    public function show($id)
+    { 
+        return new ClassesResource(Classe::find($id));
     }
 
     /**
@@ -68,9 +76,14 @@ class ClasseController extends Controller
      * @param  \App\Models\Classe  $classe
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateClasseRequest $request, Classe $classe)
+    public function update(Request $request,$id)
     {
-        //
+        $classe = Classe::find($id);
+        $classe->update([
+            'name' => $request->input('name')
+        ]);
+
+        return new ClassesResource($classe);
     }
 
     /**
@@ -79,8 +92,10 @@ class ClasseController extends Controller
      * @param  \App\Models\Classe  $classe
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Classe $classe)
+    public function destroy($id)
     {
-        //
+        $classe = Classe::find($id);
+        $classe->delete();
+        return response(null, 204);
     }
 }

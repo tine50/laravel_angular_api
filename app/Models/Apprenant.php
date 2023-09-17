@@ -9,4 +9,8 @@ class Apprenant extends Model
 {
     use HasFactory;
     protected $fillable = ['prenom', 'nom', 'age', 'classe_id'];
+
+    public function classe() {
+        return $this->belongsTo(Classe::class);
+    }
 }

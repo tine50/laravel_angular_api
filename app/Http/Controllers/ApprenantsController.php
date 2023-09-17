@@ -3,10 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\Apprenant;
-use App\Http\Requests\StoreApprenantRequest;
 use App\Http\Requests\UpdateApprenantRequest;
+use App\Http\Resources\ApprenantResource;
+use App\Http\Resources\ClassesResource;
+use Illuminate\Http\Request;
 
-class ApprenantController extends Controller
+class ApprenantsController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -16,6 +18,7 @@ class ApprenantController extends Controller
     public function index()
     {
         //
+        return ApprenantResource::collection(Apprenant::all());
     }
 
     /**
@@ -34,9 +37,16 @@ class ApprenantController extends Controller
      * @param  \App\Http\Requests\StoreApprenantRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StoreApprenantRequest $request)
+    public function store(Request $request)
     {
-        //
+        $apprenant = Apprenant::create([
+            'prenom' => $request->prenom,
+            'nom'    => $request->nom,
+            "age"    => $request->age,
+            "classe_id" => $request->classe_id,
+        ]);
+        $apprenant->save();
+        return new ApprenantResource($apprenant);
     }
 
     /**
@@ -47,7 +57,7 @@ class ApprenantController extends Controller
      */
     public function show(Apprenant $apprenant)
     {
-        //
+        return new ApprenantResource($apprenant);
     }
 
     /**
@@ -68,9 +78,18 @@ class ApprenantController extends Controller
      * @param  \App\Models\Apprenant  $apprenant
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateApprenantRequest $request, Apprenant $apprenant)
+    public function update(Request $request, $id)
     {
-        //
+        $apprenant = Apprenant::find($id);
+        $apprenant->update([
+            'prenom' => $request->prenom,
+            'nom'    => $request->nom,
+            "age"    => $request->age,
+            "classe_id" => $request->classe_id,
+        ]);
+
+        $apprenant->save();
+        return new ApprenantResource($apprenant);
     }
 
     /**
@@ -79,8 +98,11 @@ class ApprenantController extends Controller
      * @param  \App\Models\Apprenant  $apprenant
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Apprenant $apprenant)
+    public function destroy($id)
     {
-        //
+        $apprenant = Apprenant::find($id);
+        $apprenant->delete();
+
+        return response(null, 204);
     }
 }
